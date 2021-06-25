@@ -3,11 +3,17 @@
   "version": "1.0.0",
   "description": "Node.js on demo",
   "author": "Ali Husni <aalihusni@gmail.com>",
-  "main": "server.js",
+  "main": "app.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "nodemon app.js"
   },
   "dependencies": {
-    "express": "^4.16.1"
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "express-validator": "^5.3.0",
+    "mongoose": "^5.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.4"
   }
 }
