@@ -1,5 +1,5 @@
 const { validationResult } = require('express-validator/check');
-
+const http = require('http');
 const Order = require('../models/order');
 
 exports.addOrder = (req, res, next) => {
@@ -13,9 +13,9 @@ exports.getOrder = (req, res, next) => {
 exports.proceedPayment = (req, res, next) => {
     var request = http.request({
         host: 'localhost',
-        port: 8081,
-        path: '/test',
-        method: 'GET',
+        port: 8080,
+        path: '/payment/try',
+        method: 'POST',
         headers: {
             // headers such as "Cookie" can be extracted from req object and sent to /test
         }
