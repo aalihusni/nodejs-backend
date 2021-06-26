@@ -4,7 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
-const feedRoutes = require('./src/routes/feed');
+const feedRoutes = require('./src/routes/web');
 
 const app = express();
 
@@ -22,7 +22,8 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use('/', feedRoutes);
+let routes = feedRoutes.init();
+app.use(routes);
 
 app.use((error, req, res, next) => {
     console.log(error);

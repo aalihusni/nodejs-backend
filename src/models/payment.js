@@ -1,26 +1,26 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const postSchema = new Schema(
+const paymentSchema = new Schema(
     {
-        title: {
+        paymentId: {
             type: String,
             required: true
         },
-        imageUrl: {
+        orderId: {
             type: String,
             required: true
         },
-        content: {
-            type: String,
+        amount: {
+            type: Number,
             required: true
         },
-        creator: {
-            type: Object,
-            required: String
+        status: {
+            type: String,
+            required: true
         }
     },
     {timestamps: true}
 );
 
-module.exports = mongoose.model('post', postSchema);
+module.exports = mongoose.model('payment', paymentSchema);

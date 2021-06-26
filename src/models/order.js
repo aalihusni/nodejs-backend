@@ -1,21 +1,22 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const postSchema = new Schema(
+
+const orderSchema = new Schema(
     {
-        title: {
+        orderId: {
             type: String,
             required: true
         },
-        imageUrl: {
-            type: String,
+        item: {
+            type: Array,
             required: true
         },
-        content: {
-            type: String,
+        totalPrice: {
+            type: Number,
             required: true
         },
-        creator: {
+        paymentId: {
             type: Object,
             required: String
         }
@@ -23,4 +24,4 @@ const postSchema = new Schema(
     {timestamps: true}
 );
 
-module.exports = mongoose.model('post', postSchema);
+module.exports = mongoose.model('order', orderSchema);
