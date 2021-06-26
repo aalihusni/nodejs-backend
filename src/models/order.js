@@ -4,22 +4,19 @@ const Schema = mongoose.Schema;
 
 const orderSchema = new Schema(
     {
-        orderId: {
+        item: {
             type: String,
             required: true
         },
-        item: {
-            type: Array,
-            required: true
+        status: {
+            type: String,
+            required: true,
+            default: 'new order'
         },
         totalPrice: {
             type: Number,
             required: true
         },
-        paymentId: {
-            type: Object,
-            required: String
-        }
     },
     {timestamps: true}
 );
