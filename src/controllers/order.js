@@ -59,7 +59,7 @@ exports.proceedPayment = async (req, res, next) => {
             const data = req.body;
             data['order'] = order;
 
-            var request = http.request({
+            const request = http.request({
                 host: 'localhost',
                 port: 8080,
                 path: '/payment/try',
@@ -69,7 +69,7 @@ exports.proceedPayment = async (req, res, next) => {
                 }
             }, function (response) {
                 let data = '';
-                response.setEncoding('utf8');
+                // response.setEncoding('utf8');
                 response.on('data', (chunk) => {
                     data += chunk;
                 });
@@ -78,17 +78,19 @@ exports.proceedPayment = async (req, res, next) => {
                     if (data.success) {
                         res.status(200).json({
                             success: true,
-                            message: "Order has completed" ,
+                            message: "Order has completed",
                             data: []
                         }).end()
-                        Order.findByIdAndUpdate(orderId, {"status":"delivered"}).then(order =>{});
+                        Order.findByIdAndUpdate(orderId, {"status": "delivered"}).then(order => {
+                        });
                     } else {
                         res.status(200).json({
                             success: false,
-                            message: "Something is wrong while doing payment" ,
+                            message: "Something is wrong while doing payment",
                             data: []
                         }).end()
-                        Order.findByIdAndUpdate(orderId, {"status":"pending payment"}).then(order =>{});
+                        Order.findByIdAndUpdate(orderId, {"status": "pending payment"}).then(order => {
+                        });
                     }
                 });
             });
