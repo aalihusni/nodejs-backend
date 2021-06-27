@@ -58,7 +58,7 @@ exports.proceedPayment = async (req, res, next) => {
                 error.statusCode = 404;
                 throw error;
             }
-
+            //inject order into request body
             data['order'] = order;
 
             let result = await callPayment(orderId, data);
