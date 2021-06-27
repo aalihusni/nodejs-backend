@@ -49,58 +49,74 @@ exports.getOrder = (req, res, next) => {
 
 exports.proceedPayment = async (req, res, next) => {
     const orderId = req.body.orderId;
+    const data = req.body;
+
     await Order.findById(orderId)
-        .then(order => {
+        .then(async order => {
             if (!order) {
                 const error = new Error('Could not find post.');
                 error.statusCode = 404;
                 throw error;
             }
-            const data = req.body;
+
             data['order'] = order;
 
-            const request = http.request({
-                host: 'localhost',
-                port: 8080,
-                path: '/payment/try',
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            }, function (response) {
-                let data = '';
-                // response.setEncoding('utf8');
-                response.on('data', (chunk) => {
-                    data += chunk;
-                });
-                response.on('end', () => {
-                    data = JSON.parse(data);
-                    if (data.success) {
-                        res.status(200).json({
-                            success: true,
-                            message: "Order has completed",
-                            data: []
-                        }).end()
-                        Order.findByIdAndUpdate(orderId, {"status": "delivered"}).then(order => {
-                        });
-                    } else {
-                        res.status(200).json({
-                            success: false,
-                            message: "Something is wrong while doing payment",
-                            data: []
-                        }).end()
-                        Order.findByIdAndUpdate(orderId, {"status": "pending payment"}).then(order => {
-                        });
-                    }
-                });
-            });
-            request.write(JSON.stringify(data));
-            request.end();
-        })
-        .catch(err => {
+            let result = await callPayment(orderId, data);
+            let message = "Something is wrong while making payment"
+
+            if (result) {
+                message = "Order has completed";
+            }
+
+            res.status(200).json({
+                status: result,
+                message: message,
+                data: []
+            }).end();
+
+        }).catch(err => {
             if (!err.statusCode) {
                 err.statusCode = 500;
             }
             next(err);
         });
-};
+}
+
+function callPayment(orderId, data) {
+    return new Promise((resolve, reject) => {
+        //TODO change the payment endpoint to another nodejs docker instance
+        const request = http.request({
+            host: 'localhost',
+            port: 8080,
+            path: '/payment/try',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        }, function (response) {
+            let data = '';
+            response.on('data', (chunk) => {
+                data += chunk;
+            });
+            response.on('end', () => {
+                data = JSON.parse(data);
+                if (data.success) {
+                    updateOrder(orderId, {"status": "delivered"});
+                    resolve(true);
+                } else {
+                    updateOrder(orderId, {"status": "pending payment"});
+                    resolve(false);
+                }
+            });
+        });
+        request.write(JSON.stringify(data));
+        request.end();
+    });
+}
+
+function updateOrder(orderId, message) {
+    Order.findByIdAndUpdate(orderId, message).then(order => {
+    }).catch(err => {
+        console.log(err);
+    });
+}
