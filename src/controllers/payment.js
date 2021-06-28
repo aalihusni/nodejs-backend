@@ -21,6 +21,7 @@ exports.getPayment = (req, res, next) => {
 
 let transaction = '';
 exports.confirmPayment = async (req, res, next) => {
+    console.log("called payment");
     await new Promise(resolve => setTimeout(resolve, 5000));
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

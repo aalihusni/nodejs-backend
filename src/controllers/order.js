@@ -84,16 +84,17 @@ exports.proceedPayment = async (req, res, next) => {
 
 function callPayment(orderId, data) {
     return new Promise((resolve, reject) => {
-        //TODO change the payment endpoint to another nodejs docker instance
+        //call to another instance on port 8082 to simulate microservices
         const request = http.request({
             host: 'localhost',
-            port: 8080,
+            port: process.env.MS_PORT,
             path: '/payment/try',
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             }
         }, function (response) {
+            console.log("here");
             let data = '';
             response.on('data', (chunk) => {
                 data += chunk;

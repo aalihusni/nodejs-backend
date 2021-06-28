@@ -3,11 +3,11 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const cors = require('cors')
 
 const feedRoutes = require('./src/routes/web');
 
 const app = express();
-
 // app.use(bodyParser.urlencoded()); // x-www-form-urlencoded <form>
 app.use(bodyParser.json()); // application/json
 app.use('/images', express.static(path.join(__dirname, 'images')));
@@ -38,6 +38,6 @@ mongoose
         { useNewUrlParser: true }
     )
     .then(result => {
-        app.listen(8080);
+        app.listen(process.env.PORT);
     })
     .catch(err => console.log(err));
