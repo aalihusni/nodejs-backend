@@ -86,8 +86,8 @@ function callPayment(orderId, data) {
     return new Promise((resolve, reject) => {
         //call to another instance on port 8082 to simulate microservices
         const request = http.request({
-            host: 'localhost',
-            port: process.env.MS_PORT,
+            host: 'nodejs-2',
+            port: "8082",
             path: '/payment/try',
             method: 'POST',
             headers: {
