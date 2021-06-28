@@ -31,12 +31,4 @@ router.group('/order', [], (router) => {
     });
 });
 
-router.group('/payment', [], (router) => {
-    router.post('/try', function (req, res, next) {
-        paymentController.confirmPayment(req, res, next).then(r => {})
-    });
-    router.get('/list', function (req, res, next) {
-        paymentController.getPayment(req, res, next)
-    });
-});
 module.exports = router;
