@@ -3,11 +3,12 @@ let router = new Router();
 
 const {body} = require('express-validator/check');
 
-const feedController = require('../controllers/feed');
-const orderController = require('../controllers/order');
-const paymentController = require('../controllers/payment');
+const isAuth = require('../middleware/is-auth');
 
-router.group('/feed', [], (router) => {
+const feedController = require('../controllers/feedController');
+const orderController = require('../controllers/orderController');
+
+router.group('/feed', isAuth, (router) => {
     router.get('/posts', function (req, res, next) {
         feedController.getPosts(req, res, next)
     });
@@ -19,7 +20,7 @@ router.group('/feed', [], (router) => {
     });
 });
 
-router.group('/order', [], (router) => {
+router.group('/order', isAuth, (router) => {
     router.get('/list', function (req, res, next) {
         orderController.getOrder(req, res, next)
     });

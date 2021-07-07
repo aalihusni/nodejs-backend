@@ -1,6 +1,6 @@
 const {validationResult} = require('express-validator/check');
 const http = require('http');
-const Order = require('../models/order');
+const OrderController = require('../models/order');
 
 exports.addOrder = (req, res, next) => {
     const errors = validationResult(req);
@@ -11,7 +11,7 @@ exports.addOrder = (req, res, next) => {
     }
     const item = req.body.item;
     const totalPrice = req.body.totalPrice;
-    const order = new Order({
+    const order = new OrderController({
         item: item,
         totalPrice: totalPrice,
     });
@@ -19,7 +19,7 @@ exports.addOrder = (req, res, next) => {
         .save()
         .then(result => {
             res.status(201).json({
-                message: 'Order created successfully!',
+                message: 'OrderController created successfully!',
                 post: result
             });
         })
@@ -32,13 +32,13 @@ exports.addOrder = (req, res, next) => {
 };
 
 exports.getOrder = (req, res, next) => {
-    Order.find().then((order) => {
+    OrderController.find().then((order) => {
         if (!order) {
             const error = new Error('Could not find order.');
             error.statusCode = 404;
             throw error;
         }
-        res.status(200).json({message: 'Order fetched.', order: order});
+        res.status(200).json({message: 'OrderController fetched.', order: order});
     }).catch(err => {
         if (!err.statusCode) {
             err.statusCode = 500;
@@ -51,7 +51,7 @@ exports.proceedPayment = async (req, res, next) => {
     const orderId = req.body.orderId;
     const data = req.body;
 
-    await Order.findById(orderId)
+    await OrderController.findById(orderId)
         .then(async order => {
             if (!order) {
                 const error = new Error('Could not find post.');
@@ -65,7 +65,7 @@ exports.proceedPayment = async (req, res, next) => {
             let message = "Something is wrong while making payment"
 
             if (result) {
-                message = "Order has completed";
+                message = "OrderController has completed";
             }
 
             res.status(200).json({
@@ -116,7 +116,7 @@ function callPayment(orderId, data) {
 }
 
 function updateOrder(orderId, message) {
-    Order.findByIdAndUpdate(orderId, message).then(order => {
+    OrderController.findByIdAndUpdate(orderId, message).then(order => {
     }).catch(err => {
         console.log(err);
     });
