@@ -1,16 +1,16 @@
 const path = require('path');
-
+const dotenv = require('dotenv').config();
 const express = require('express');
+const routeList = require("express-routes-catalogue");
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const session = require('express-session');
-const cors = require('cors')
 const MongoDBStore = require('connect-mongodb-session')(session);
 
 const User = require('./src/models/user');
 
 const feedRoutes = require('./src/routes/web');
-
+const authRoutes = require('./src/routes/auth');
 const app = express();
 // app.use(bodyParser.urlencoded()); // x-www-form-urlencoded <form>
 app.use(bodyParser.json()); // application/json
@@ -27,13 +27,13 @@ app.use((req, res, next) => {
 });
 
 const store = new MongoDBStore({
-    uri: 'mongodb://mongodb:27017',
+    uri: 'mongodb://' + process.env.MONGODB_HOST + ':' + process.env.MONGODB_PORT,
     collection: 'sessions'
 });
 
 app.use(
     session({
-        secret: 'my secret',
+        secret: process.env.TOKEN,
         resave: false,
         saveUninitialized: false,
         store: store
@@ -53,8 +53,15 @@ app.use((req, res, next) => {
         .catch(err => console.log(err));
 });
 
-let routes = feedRoutes.init();
-app.use(routes);
+app.use(feedRoutes.init());
+app.use(authRoutes.init());
+
+if (process.env.NODE_ENV === "development") {
+    routeList.default.web(
+        app,
+        "/route-list"
+    );
+}
 
 app.use((error, req, res, next) => {
     console.log(error);
@@ -65,7 +72,7 @@ app.use((error, req, res, next) => {
 
 mongoose
     .connect(
-        'mongodb://mongodb:27017',
+        'mongodb://' + process.env.MONGODB_HOST + ':' + process.env.MONGODB_PORT,
         {useNewUrlParser: true}
     )
     .then(result => {
