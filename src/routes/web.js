@@ -8,7 +8,7 @@ const isAuth = require('../middleware/is-auth');
 const feedController = require('../controllers/feedController');
 const orderController = require('../controllers/orderController');
 
-router.group('/feed', isAuth, (router) => {
+router.group('/feed', [isAuth], (router) => {
     router.get('/posts', function (req, res, next) {
         feedController.getPosts(req, res, next)
     });
@@ -20,7 +20,7 @@ router.group('/feed', isAuth, (router) => {
     });
 });
 
-router.group('/order', isAuth, (router) => {
+router.group('/order', [], (router) => {
     router.get('/list', function (req, res, next) {
         orderController.getOrder(req, res, next)
     });
@@ -28,7 +28,9 @@ router.group('/order', isAuth, (router) => {
         orderController.addOrder(req, res, next)
     });
     router.post('/payment', function (req, res, next) {
-        orderController.proceedPayment(req, res, next)
+        orderController.proceedPayment(req, res, next).then(r => {
+
+        })
     });
 });
 
