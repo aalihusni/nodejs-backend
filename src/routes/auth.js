@@ -15,3 +15,5 @@ router.group('/auth', [], (router) => {
         authController.logout(req, res, next)
     });
 });
+
+module.exports = router;
